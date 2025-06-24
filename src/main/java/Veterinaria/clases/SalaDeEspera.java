@@ -1,4 +1,4 @@
-package Veterinaria;
+package Veterinaria.clases;
 import java.util.concurrent.Semaphore;
 
 public class SalaDeEspera {

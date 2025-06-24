@@ -1,5 +1,4 @@
-package Veterinaria;
-import java.util.concurrent.TimeUnit;
+package Veterinaria.clases;
 
 public class Veterinario extends Thread {
     private final String nombre;

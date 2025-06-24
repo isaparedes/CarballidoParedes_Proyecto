@@ -1,5 +1,9 @@
 package Veterinaria;
 
+import Veterinaria.clases.Cliente;
+import Veterinaria.clases.SalaDeEspera;
+import Veterinaria.clases.Veterinario;
+
 public class Main {
     public static void main(String[] args) {
        SalaDeEspera sala = new SalaDeEspera(3);
