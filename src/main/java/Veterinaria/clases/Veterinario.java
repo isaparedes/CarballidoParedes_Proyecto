@@ -3,6 +3,7 @@ package Veterinaria.clases;
 public class Veterinario extends Thread {
     private final String nombre;
     private final SalaDeEspera sala;
+    private int siCierra;
 
     public Veterinario(String nombre, SalaDeEspera sala) {
         this.nombre = nombre;
@@ -32,9 +33,18 @@ public class Veterinario extends Thread {
     }
 
     public void ordenar() {
-        System.out.println(this.nombre+" esta ordenando...");
+        synchronized (System.out) {
+            System.out.println(this.nombre+" esta ordenando...");
+        }
+        siCierra++;
+        if (siCierra == 6) {
+            synchronized (System.out) {
+                System.out.println("VETERINARIA CERRADA");
+            }
+            System.exit(0);
+        }
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1500);
         }
         catch (InterruptedException e) {
             e.printStackTrace();

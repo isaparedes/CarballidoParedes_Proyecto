@@ -1,48 +1,57 @@
 package Veterinaria.clases;
+
+import java.util.Queue;
+import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
 public class SalaDeEspera {
-    private int lugaresLibres;
-    private final Semaphore mutuaExclusion = new Semaphore(1);
-    private final Semaphore mascotaEsperando = new Semaphore(0);
-    private final Semaphore veterinarioListo = new Semaphore(0);
+    private int sillasLibres;
+
+    private final Semaphore mutex = new Semaphore(1);
+    private final Semaphore clienteListo = new Semaphore(0);
+    private final Queue<Cliente> colaClientes = new LinkedList<>();
 
     public SalaDeEspera(int capacidad) {
-        this.lugaresLibres = capacidad;
+        this.sillasLibres = capacidad;
     }
 
-    public void nuevoCliente(Cliente cliente) throws InterruptedException {
-        mutuaExclusion.acquire();
-        if (lugaresLibres > 0) {
-            lugaresLibres--;
-            System.out.println(cliente.getNombre()+" vino con un "+cliente.getRaza()
-                    +". Lugares libres: "+this.lugaresLibres);
-            mascotaEsperando.release();
-            mutuaExclusion.release();
-            veterinarioListo.acquire();
-            System.out.println(cliente.getNombre()+" con el número "+cliente.getNumero()+" está siendo atendido");
+    public void llegaCliente(Cliente cliente) throws InterruptedException {
+        mutex.acquire();
+        if (sillasLibres > 0) {
+            sillasLibres--;
+            colaClientes.add(cliente);
+            synchronized (System.out) {
+                System.out.println(cliente.getNombre() + " llega con un " +
+                        cliente.getRaza() + ". Sillas libres: " + sillasLibres);
+            }
+            clienteListo.release();
+        } else {
+            synchronized (System.out) {
+                System.out.println(cliente.getNombre() + " se va, no hay lugar");
+            }
         }
-        else {
-            System.out.println("No hay lugares libres, "+cliente.getNombre()+" se va");
-            mutuaExclusion.release();
+        mutex.release();
+    }
+
+    public Cliente atenderCliente(String nombreVet) throws InterruptedException {
+        clienteListo.acquire();
+
+        mutex.acquire();
+        Cliente cliente = colaClientes.poll();
+        sillasLibres++;
+        mutex.release();
+
+        synchronized (System.out) {
+            System.out.println("🩺 " + nombreVet + " atiende a " + cliente.getNombre() +
+                    " con mascota " + cliente.getRaza() +
+                    ". Sillas libres: " + sillasLibres);
         }
 
-    }
-
-    public void esperarCliente() throws InterruptedException {
-        mascotaEsperando.acquire();
-    }
-
-    public void atenderCliente(String veterinario) throws InterruptedException {
-        mutuaExclusion.acquire();
-        lugaresLibres++;
-        System.out.println(veterinario+" atiende a un cliente. Lugares libres: "+this.lugaresLibres);
-        mutuaExclusion.release();
-        Thread.sleep(6000);
-        veterinarioListo.release();
+        Thread.sleep(3000);
+        return cliente;
     }
 
     public boolean intentarEsperarCliente() throws InterruptedException {
-        return mascotaEsperando.tryAcquire(1, java.util.concurrent.TimeUnit.SECONDS);
+        return clienteListo.tryAcquire(1, java.util.concurrent.TimeUnit.SECONDS);
     }
 }
