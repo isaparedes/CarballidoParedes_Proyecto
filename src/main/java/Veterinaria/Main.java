@@ -1,12 +1,13 @@
 package Veterinaria;
 
-import Veterinaria.clases.Cliente;
-import Veterinaria.clases.SalaDeEspera;
-import Veterinaria.clases.Veterinario;
+import Veterinaria.Clases.Cliente;
+import Veterinaria.Clases.SalaDeEspera;
+import Veterinaria.Clases.Veterinario;
 
 public class Main {
     public static void main(String[] args) {
-        SalaDeEspera sala = new SalaDeEspera(6);
+        /*
+        SalaDeEspera sala = new SalaDeEspera(8);
         Veterinario vet1 = new Veterinario("Dra. Vanesa", sala);
         Veterinario vet2 = new Veterinario("Dra. Isabela", sala);
         vet1.start();
@@ -26,9 +27,11 @@ public class Main {
                 }
             }).start();
         }
+
+         */
     }
 
-    private static String razaRandom() {
+    /*private static String razaRandom() {
         String[] razas = {"Pastor Alemán", "Golden Retriever", "Caniche", "Doberman", "Salchicha",
                 "Gran Danés", "Yorkshire", "Siamés", "Corgi", "Labrador", "Persa", "Carey", "cruza",};
         return razas[(int) (Math.random() * razas.length)];
@@ -39,4 +42,6 @@ public class Main {
         "Andrea", "Marcos", "Agustín", "Constanza"};
         return nombres[(int) (Math.random() * nombres.length)];
     }
+
+     */
 }

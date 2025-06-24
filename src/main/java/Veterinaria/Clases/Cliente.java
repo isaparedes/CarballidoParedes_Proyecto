@@ -1,4 +1,4 @@
-package Veterinaria.clases;
+package Veterinaria.Clases;
 
 public class Cliente {
     private final String nombre;

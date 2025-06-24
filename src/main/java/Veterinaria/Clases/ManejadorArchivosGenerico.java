@@ -1,4 +1,4 @@
-package Veterinaria.clases;
+package Veterinaria.Clases;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
