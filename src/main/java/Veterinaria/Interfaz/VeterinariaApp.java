@@ -38,7 +38,7 @@ public class VeterinariaApp extends Application {
         // Agregamos el fondo primero para que quede detrás
         root.getChildren().add(fondoView);
 
-        sala = new SalaDeEspera(8);
+        sala = new SalaDeEspera(9);
 
         // Suscribirse a llegada de clientes
         sala.addClienteListener(cliente -> {
@@ -84,25 +84,38 @@ public class VeterinariaApp extends Application {
     }
 
     private void animarCliente(Cliente cliente) {
-        Circle clienteCircle = new Circle(10, Color.BLACK);
-        clienteCircle.setCenterX(500);
-        clienteCircle.setCenterY(500);
-        root.getChildren().add(clienteCircle);
+        // Cargamos la imagen que deseas para el cliente
+        Image imagenCliente = new Image(getClass().getResourceAsStream("/Imagenes/cliente.png"));
+        ImageView clienteView = new ImageView(imagenCliente);
 
+        // Ajustamos el tamaño de la imagen si quieres (opcional)
+        clienteView.setFitWidth(159); // ajusta a tu gusto
+        clienteView.setFitHeight(176); // ajusta a tu gusto
+
+        // Posición inicial
+        clienteView.setX(10);
+        clienteView.setY(590);
+
+        // Agregamos al root
+        root.getChildren().add(clienteView);
+
+        // Texto con el nombre del cliente
         Text texto = new Text(cliente.getNombre());
         texto.setX(50);
         texto.setY(480);
         root.getChildren().add(texto);
 
-        TranslateTransition animacion = new TranslateTransition(Duration.seconds(3), clienteCircle);
-        animacion.setByX(300);
-        animacion.setByY(-100);
+        // Animación
+        TranslateTransition animacion = new TranslateTransition(Duration.seconds(3), clienteView);
+        animacion.setByX(0);
+        animacion.setByY(-200);
         animacion.setOnFinished(e -> {
-            root.getChildren().remove(clienteCircle);
+            root.getChildren().remove(clienteView);
             root.getChildren().remove(texto);
         });
         animacion.play();
     }
+
 
     private void animarAtencion(String nombreVet, Cliente cliente) {
         Text atencion = new Text(nombreVet + " atiende a " + cliente.getNombre());
@@ -135,8 +148,8 @@ public class VeterinariaApp extends Application {
             String[] razas = {"Pastor Alemán", "Golden Retriever", "Caniche", "Doberman", "Salchicha",
                     "Gran Danés", "Yorkshire", "Siamés", "Corgi", "Labrador", "Persa", "Carey", "cruza"};
 
-            String[] nombres = {"Juan", "Felipe", "Ana", "Florencia", "Dolores",
-                    "Andrea", "Marcos", "Agustín", "Constanza"};
+            String[] nombres = {"Juan", "Felipe", "Marcos", "Agustín", "Julián", "Romeo", "Alberto",
+            "Ángel"};
 
             for (int i = 1; i <= 10; i++) {
                 try {
