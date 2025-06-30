@@ -6,37 +6,44 @@ import java.util.concurrent.Semaphore;
 
 public class SalaDeEspera {
     private final Queue<Cliente> cola = new LinkedList<>();
-    private final Semaphore semaforoSalaEspera = new Semaphore(9); // 9 sillas
+    private final Semaphore sillasDisponibles = new Semaphore(9);
+    public final Semaphore cliente = new Semaphore(0);
+    public final Semaphore veterinario = new Semaphore(0);
+    public final Semaphore mutex = new Semaphore(1);
 
-    public void llegaCliente(Cliente c) {
-        try {
-            semaforoSalaEspera.acquire();
-            synchronized (cola) {
-                cola.add(c);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public boolean llegaCliente(Cliente c) throws InterruptedException {
+        mutex.acquire();
+        if (sillasDisponibles.tryAcquire()) {
+            cola.add(c);
+            cliente.release(); // cliente espera
+            String mensaje = c.getNombre() + " vino con un "+c.getRaza();
+            ManejadorArchivosGenerico.escribirArchivo("src/main/java/Veterinaria/veterinaria.txt",
+                    new String[]{mensaje});
+            mutex.release();
+            return true;
+        } else {
+            mutex.release();
+            String mensaje = c.getNombre() + " se fue porque no había lugar en la sala";
+            ManejadorArchivosGenerico.escribirArchivo("src/main/java/Veterinaria/veterinaria.txt",
+                    new String[]{mensaje});
+            return false; // no hay sillas libres
         }
     }
 
     public Cliente tomarCliente() throws InterruptedException {
-        while (true) {
-            synchronized (cola) {
-                if (!cola.isEmpty()) {
-                    return cola.poll();
-                }
-            }
-            Thread.sleep(100);
-        }
+        cliente.acquire(); // espera cliente
+        mutex.acquire();
+        Cliente c = cola.poll();
+        veterinario.release();   // permite que cliente sea atendido
+        sillasDisponibles.release(); // libera silla
+        mutex.release();
+        return c;
     }
 
     public boolean noHayMasClientes() {
-        synchronized (cola) {
-            return cola.isEmpty();
-        }
-    }
-
-    public void liberarEspacio() {
-        semaforoSalaEspera.release();
+        mutex.acquireUninterruptibly();
+        boolean vacio = cola.isEmpty();
+        mutex.release();
+        return vacio;
     }
 }

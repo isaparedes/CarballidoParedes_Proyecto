@@ -24,6 +24,8 @@ public class VeterinariaApp extends Application {
     private static int totalClientes = 0;
     private static final int MAX_CLIENTES = 30;
 
+    private boolean cerrado = false;  // Bandera para controlar cierre único
+
     private double[][] sillas = {
             {100,140}, {200,140}, {307,140}, {407,140}, {509,140},
             {100,260}, {200,260}, {300,260}, {400,260}
@@ -54,39 +56,25 @@ public class VeterinariaApp extends Application {
             }
             @Override
             public void veterinarioOrdenando(String nombre) {
-                Platform.runLater(() -> mostrarOrden(nombre));
-            }
-            @Override
-            public void veterinariaCerrada() {
-                Platform.runLater(() -> {
-                    // Limpiar la pantalla (si querés)
-                    root.getChildren().removeIf(n -> n instanceof ImageView || n instanceof Text);
-
-                    // Cambiar a imagen de cerrado
-                    Image nuevoFondo = new Image(getClass().getResourceAsStream("/Imagenes/cerrado.png"));
-                    ImageView fondoCerrado = new ImageView(nuevoFondo);
-                    fondoCerrado.setFitWidth(800);
-                    fondoCerrado.setFitHeight(600);
-                    fondoCerrado.setPreserveRatio(false);
-                    root.getChildren().add(fondoCerrado);
-
-                    // Esperar 1 segundo y cerrar app
-                    new Thread(() -> {
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            // No hacer nada
-                        }
-                        Platform.runLater(() -> Platform.exit());
-                    }).start();
-                });
+                if (!cerrado) {
+                    cerrado = true;
+                    Platform.runLater(() -> {
+                        mostrarOrden(nombre);
+                        // Esperar animación y cerrar veterinaria
+                        new Thread(() -> {
+                            try {
+                                Thread.sleep(4000);
+                            } catch (InterruptedException e) {}
+                            Platform.runLater(() -> cerrarVeterinaria());
+                        }).start();
+                    });
+                }
             }
         };
 
         v1.addVeterinarioListener(listener);
         v2.addVeterinarioListener(listener);
 
-        // Cambié start() por atender()
         new Thread(() -> v1.atender()).start();
         new Thread(() -> v2.atender()).start();
 
@@ -99,29 +87,36 @@ public class VeterinariaApp extends Application {
 
     private void generarClientes() {
         new Thread(() -> {
-            String[] nombres = {"Juan", "Felipe", "Marcos", "Agustín", "Julián", "Romeo", "Alberto", "Ángel"};
-            String[] razas = {"Pastor", "Golden", "Caniche", "Doberman", "Salchicha", "Danés", "Yorkshire"};
+            String[] nombres = {"Juan", "Felipe", "Marcos", "Agustín", "Julián", "Romeo", "Alberto", "Ángel",
+                    "Luciano", "Ana", "María", "Martina", "Julieta", "Sofía", "Laura", "Claudia"};
+            String[] razas = {"Pastor", "Golden", "Caniche", "Doberman", "Salchicha", "Danés", "Yorkshire", "Corgi"};
             for (int i = 0; i < MAX_CLIENTES; i++) {
                 try {
-                    Thread.sleep(500 + (int)(Math.random() * 3000));
+                    Thread.sleep(500 + (int)(Math.random() * 1500));
 
-                    // Elegimos aleatoriamente entre dos imágenes de cliente
                     String imagenCliente = Math.random() > 0.5 ? "/Imagenes/cliente1.png" : "/Imagenes/cliente2.png";
 
-                    // Creamos un cliente con nombre, raza y la imagen
                     Cliente c = new Cliente(
-                            nombres[(int)(Math.random()*nombres.length)],
-                            razas[(int)(Math.random()*razas.length)],
+                            nombres[(int)(Math.random() * nombres.length)],
+                            razas[(int)(Math.random() * razas.length)],
                             imagenCliente
                     );
 
                     Platform.runLater(() -> {
                         boolean sentado = animarCliente(c);
                         if (sentado) {
-                            sala.llegaCliente(c);
+                            new Thread(() -> {
+                                try {
+                                    sala.llegaCliente(c);
+                                    sala.veterinario.acquire(); // espera ser llamado por veterinario
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
                         }
                         totalClientes++;
                     });
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -129,8 +124,8 @@ public class VeterinariaApp extends Application {
         }).start();
     }
 
+
     private boolean animarCliente(Cliente c) {
-        // Usamos la imagen del cliente de forma dinámica
         ImageView view = new ImageView(new Image(getClass().getResourceAsStream(c.getImagenCliente())));
         view.setFitWidth(159);
         view.setFitHeight(176);
@@ -148,11 +143,9 @@ public class VeterinariaApp extends Application {
         }
 
         if (silla == -1) {
-            // Primera animación: subir
             TranslateTransition subir = new TranslateTransition(Duration.seconds(2), view);
             subir.setByY(-120);
 
-            // Segunda animación: bajar después de subir
             TranslateTransition bajar = new TranslateTransition(Duration.seconds(1), view);
             bajar.setByY(100);
 
@@ -189,15 +182,33 @@ public class VeterinariaApp extends Application {
     }
 
     private void mostrarOrden(String nombre) {
-        Text t = new Text(nombre + " ordena...");
-        t.setFill(Color.GREEN);
+        Text t = new Text(nombre + " ordenando");
+        t.setFill(Color.GREENYELLOW);
         t.setX(600);
-        t.setY(600);
+        t.setY(100);
         root.getChildren().add(t);
         TranslateTransition tt = new TranslateTransition(Duration.seconds(4), t);
-        tt.setByY(-10);
+        tt.setByY(-100);
         tt.setOnFinished(e -> root.getChildren().remove(t));
         tt.play();
+    }
+
+    private void cerrarVeterinaria() {
+        root.getChildren().clear();
+
+        Image nuevoFondo = new Image(getClass().getResourceAsStream("/Imagenes/cerrado.png"));
+        ImageView fondoCerrado = new ImageView(nuevoFondo);
+        fondoCerrado.setFitWidth(800);
+        fondoCerrado.setFitHeight(600);
+        fondoCerrado.setPreserveRatio(false);
+        root.getChildren().add(fondoCerrado);
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {}
+            Platform.runLater(() -> Platform.exit());
+        }).start();
     }
 
     public static boolean todosLosClientesLlegaron() {

@@ -19,26 +19,26 @@ public class Veterinario {
     public void atender() {
         try {
             while (true) {
-                Cliente c = sala.tomarCliente(); // Espera activa
+                Cliente c = sala.tomarCliente();
 
-                // Simula el tiempo que espera sentado antes de pasar
                 Thread.sleep(2000 + (int)(Math.random() * 2000));
 
                 if (listener != null) {
                     Platform.runLater(() -> listener.veterinarioAtendiendo(nombre, c));
+                    String mensaje = nombre + " está atendiendo a la mascota de "+c.getNombre();
+                    ManejadorArchivosGenerico.escribirArchivo("src/main/java/Veterinaria/veterinaria.txt",
+                            new String[]{mensaje});
                 }
 
-                Thread.sleep(2000); // Tiempo de atención
+                Thread.sleep(2000); // atención
 
-                // Libera espacio en la sala
-                sala.liberarEspacio();
-
-                // Verificar si es hora de cerrar
                 if (Veterinaria.Interfaz.VeterinariaApp.todosLosClientesLlegaron() && sala.noHayMasClientes()) {
                     if (listener != null) {
                         Platform.runLater(() -> listener.veterinarioOrdenando(nombre));
+                        String mensaje = nombre + " está ordenando";
+                        ManejadorArchivosGenerico.escribirArchivo("src/main/java/Veterinaria/veterinaria.txt",
+                                new String[]{mensaje});
                         Thread.sleep(4000);
-                        Platform.runLater(() -> listener.veterinariaCerrada());
                     }
                     break;
                 }
