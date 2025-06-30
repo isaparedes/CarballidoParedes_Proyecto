@@ -31,8 +31,8 @@ public class VeterinariaApp extends Application {
         // Imagen de fondo
         Image fondo = new Image(getClass().getResourceAsStream("/Imagenes/vaciaConsAbiertos.png"));
         ImageView fondoView = new ImageView(fondo);
-        fondoView.setFitWidth(500);
-        fondoView.setFitHeight(500);
+        fondoView.setFitWidth(800);
+        fondoView.setFitHeight(600);
         fondoView.setPreserveRatio(false);
 
         // Agregamos el fondo primero para que quede detrás
