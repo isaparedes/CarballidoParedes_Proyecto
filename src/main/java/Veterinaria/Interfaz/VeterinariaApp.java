@@ -85,8 +85,10 @@ public class VeterinariaApp extends Application {
 
         v1.addVeterinarioListener(listener);
         v2.addVeterinarioListener(listener);
-        v1.start();
-        v2.start();
+
+        // Cambié start() por atender()
+        new Thread(() -> v1.atender()).start();
+        new Thread(() -> v2.atender()).start();
 
         stage.setScene(new Scene(root, 800, 600));
         stage.setTitle("CARBALLIDO, PAREDES - VETERINARIA");
@@ -102,10 +104,17 @@ public class VeterinariaApp extends Application {
             for (int i = 0; i < MAX_CLIENTES; i++) {
                 try {
                     Thread.sleep(500 + (int)(Math.random() * 3000));
+
+                    // Elegimos aleatoriamente entre dos imágenes de cliente
+                    String imagenCliente = Math.random() > 0.5 ? "/Imagenes/cliente1.png" : "/Imagenes/cliente2.png";
+
+                    // Creamos un cliente con nombre, raza y la imagen
                     Cliente c = new Cliente(
                             nombres[(int)(Math.random()*nombres.length)],
-                            razas[(int)(Math.random()*razas.length)]
+                            razas[(int)(Math.random()*razas.length)],
+                            imagenCliente
                     );
+
                     Platform.runLater(() -> {
                         boolean sentado = animarCliente(c);
                         if (sentado) {
@@ -121,7 +130,8 @@ public class VeterinariaApp extends Application {
     }
 
     private boolean animarCliente(Cliente c) {
-        ImageView view = new ImageView(new Image(getClass().getResourceAsStream("/Imagenes/cliente.png")));
+        // Usamos la imagen del cliente de forma dinámica
+        ImageView view = new ImageView(new Image(getClass().getResourceAsStream(c.getImagenCliente())));
         view.setFitWidth(159);
         view.setFitHeight(176);
         view.setX(10);

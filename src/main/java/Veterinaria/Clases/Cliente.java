@@ -8,9 +8,14 @@ public class Cliente {
     private transient ImageView imagenView;
     private transient int sillaIndex;
 
-    public Cliente(String nombre, String raza) {
+    // Nuevo campo para la imagen del cliente
+    private String imagenCliente;
+
+    // Constructor modificado para aceptar nombre, raza e imagenCliente
+    public Cliente(String nombre, String raza, String imagenCliente) {
         this.nombre = nombre;
         this.raza = raza;
+        this.imagenCliente = imagenCliente;  // Asignamos la imagen
     }
 
     public String getNombre() {
@@ -35,5 +40,10 @@ public class Cliente {
 
     public void setSillaIndex(int sillaIndex) {
         this.sillaIndex = sillaIndex;
+    }
+
+    // Getter para la imagen del cliente
+    public String getImagenCliente() {
+        return imagenCliente;
     }
 }
