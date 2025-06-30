@@ -42,6 +42,5 @@ public class Main {
         "Andrea", "Marcos", "Agustín", "Constanza"};
         return nombres[(int) (Math.random() * nombres.length)];
     }
-
      */
 }
