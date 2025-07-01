@@ -24,7 +24,7 @@ public class VeterinariaApp extends Application {
     private static int totalClientes = 0;
     private static final int MAX_CLIENTES = 30;
 
-    private boolean cerrado = false;  // Bandera para controlar cierre único
+    private boolean cerrado = false;
 
     private double[][] sillas = {
             {100,140}, {200,140}, {307,140}, {407,140}, {509,140},
@@ -60,7 +60,6 @@ public class VeterinariaApp extends Application {
                     cerrado = true;
                     Platform.runLater(() -> {
                         mostrarOrden(nombre);
-                        // Esperar animación y cerrar veterinaria
                         new Thread(() -> {
                             try {
                                 Thread.sleep(4000);

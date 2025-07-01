@@ -30,7 +30,7 @@ public class Veterinario {
                             new String[]{mensaje});
                 }
 
-                Thread.sleep(2000); // atención
+                Thread.sleep(2000);
 
                 if (Veterinaria.Interfaz.VeterinariaApp.todosLosClientesLlegaron() && sala.noHayMasClientes()) {
                     if (listener != null) {

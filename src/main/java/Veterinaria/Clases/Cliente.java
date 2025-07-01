@@ -8,10 +8,8 @@ public class Cliente {
     private transient ImageView imagenView;
     private transient int sillaIndex;
 
-    // Nuevo campo para la imagen del cliente
     private String imagenCliente;
 
-    // Constructor modificado para aceptar nombre, raza e imagenCliente
     public Cliente(String nombre, String raza, String imagenCliente) {
         this.nombre = nombre;
         this.raza = raza;

@@ -15,7 +15,7 @@ public class SalaDeEspera {
         mutex.acquire();
         if (sillasDisponibles.tryAcquire()) {
             cola.add(c);
-            cliente.release(); // cliente espera
+            cliente.release();
             String mensaje = c.getNombre() + " vino con un "+c.getRaza();
             ManejadorArchivosGenerico.escribirArchivo("src/main/java/Veterinaria/veterinaria.txt",
                     new String[]{mensaje});
@@ -26,16 +26,16 @@ public class SalaDeEspera {
             String mensaje = c.getNombre() + " se fue porque no había lugar en la sala";
             ManejadorArchivosGenerico.escribirArchivo("src/main/java/Veterinaria/veterinaria.txt",
                     new String[]{mensaje});
-            return false; // no hay sillas libres
+            return false;
         }
     }
 
     public Cliente tomarCliente() throws InterruptedException {
-        cliente.acquire(); // espera cliente
+        cliente.acquire();
         mutex.acquire();
         Cliente c = cola.poll();
-        veterinario.release();   // permite que cliente sea atendido
-        sillasDisponibles.release(); // libera silla
+        veterinario.release();
+        sillasDisponibles.release();
         mutex.release();
         return c;
     }
