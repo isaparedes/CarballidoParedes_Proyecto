@@ -1,5 +1,6 @@
 package Veterinaria.Clases;
 
+import Veterinaria.Interfaz.VeterinarioListener;
 import javafx.application.Platform;
 
 public class Veterinario {
@@ -44,7 +45,7 @@ public class Veterinario {
                 }
             }
         } catch (InterruptedException e) {
-            System.out.println(nombre + " interrumpido");
+            System.out.println("interrumpido");
         }
     }
 }

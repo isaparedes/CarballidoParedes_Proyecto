@@ -13,7 +13,7 @@ public class Cliente {
     public Cliente(String nombre, String raza, String imagenCliente) {
         this.nombre = nombre;
         this.raza = raza;
-        this.imagenCliente = imagenCliente;  // Asignamos la imagen
+        this.imagenCliente = imagenCliente;
     }
 
     public String getNombre() {

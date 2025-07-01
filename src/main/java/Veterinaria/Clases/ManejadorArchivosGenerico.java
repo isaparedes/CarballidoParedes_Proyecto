@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+//Esta es una clase que nos dieron en Algoritmos y decidimos usarla acá
 public class ManejadorArchivosGenerico {
 
     /**

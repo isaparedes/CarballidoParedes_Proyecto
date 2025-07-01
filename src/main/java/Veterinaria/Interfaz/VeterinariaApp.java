@@ -3,7 +3,6 @@ package Veterinaria.Interfaz;
 import Veterinaria.Clases.Cliente;
 import Veterinaria.Clases.SalaDeEspera;
 import Veterinaria.Clases.Veterinario;
-import Veterinaria.Clases.VeterinarioListener;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -25,7 +24,7 @@ public class VeterinariaApp extends Application {
     private static int totalClientes = 0;
 
     //Cantidad de clientes que generará la simulación
-    private static final int MAX_CLIENTES = 30;
+    private static final int MAX_CLIENTES = 26;
 
     //Para saber si la veterinaria está abierta o cerrada (para la animación final)
     private boolean cerrado = false;
@@ -80,7 +79,9 @@ public class VeterinariaApp extends Application {
                         new Thread(() -> {
                             try {
                                 Thread.sleep(4000);
-                            } catch (InterruptedException e) {}
+                            } catch (InterruptedException e) {
+                                System.out.println("interrumpido");
+                            }
 
                             //Cierre de la veterinaria si pasó mucho tiempo ordenando
                             Platform.runLater(() -> cerrarVeterinaria());
@@ -99,7 +100,6 @@ public class VeterinariaApp extends Application {
         stage.setScene(new Scene(root, 800, 600));
         stage.setTitle("CARBALLIDO, PAREDES - VETERINARIA");
         stage.show();
-
         generarClientes();
     }
 
@@ -238,7 +238,9 @@ public class VeterinariaApp extends Application {
         new Thread(() -> {
             try {
                 Thread.sleep(3000);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                System.out.println("interrumpido");
+            }
             Platform.runLater(() -> Platform.exit());
         }).start();
     }
