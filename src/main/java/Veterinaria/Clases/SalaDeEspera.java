@@ -24,6 +24,7 @@ public class SalaDeEspera {
         } else {
             mutex.release();
             String mensaje = c.getNombre() + " se fue porque no había lugar en la sala";
+            System.out.println(mensaje);
             ManejadorArchivosGenerico.escribirArchivo("src/main/java/Veterinaria/veterinaria.txt",
                     new String[]{mensaje});
             return false;

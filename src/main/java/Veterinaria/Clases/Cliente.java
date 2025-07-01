@@ -40,7 +40,6 @@ public class Cliente {
         this.sillaIndex = sillaIndex;
     }
 
-    // Getter para la imagen del cliente
     public String getImagenCliente() {
         return imagenCliente;
     }
