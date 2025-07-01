@@ -25,10 +25,10 @@ public class Main {
         }
 
         // Crear clientes aleatorios
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 13; i++) {
             new Thread(() -> {
                 try {
-                    Thread.sleep((int) (Math.random() * 5000)); // Tiempo aleatorio de espera
+                    Thread.sleep((int) (Math.random() * 1000)); // Tiempo aleatorio de espera
                     // Generamos un cliente con el nombre, raza y una imagen aleatoria
                     Cliente c = new Cliente(nombreRandom(), razaRandom(), Math.random() > 0.5 ? "/Imagenes/cliente1.png" : "/Imagenes/cliente2.png");
                     sala.llegaCliente(c);

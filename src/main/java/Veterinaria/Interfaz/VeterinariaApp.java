@@ -103,7 +103,7 @@ public class VeterinariaApp extends Application {
             String[] razas = {"Pastor", "Golden", "Caniche", "Doberman", "Salchicha", "Danés", "Yorkshire"};
             for (int i = 0; i < MAX_CLIENTES; i++) {
                 try {
-                    Thread.sleep(500 + (int)(Math.random() * 3000));
+                    Thread.sleep(500 + (int)(Math.random() * 2500));
 
                     // Elegimos aleatoriamente entre dos imágenes de cliente
                     String imagenCliente = Math.random() > 0.5 ? "/Imagenes/cliente1.png" : "/Imagenes/cliente2.png";
